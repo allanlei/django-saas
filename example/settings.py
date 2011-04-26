@@ -100,7 +100,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'tests.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -115,6 +115,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'example',
+    'tests',
+    'saas.multidb',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -148,33 +151,27 @@ LOGGING = {
 
 
 
-INSTALLED_APPS += (
-    'example',
-    'saas.multidb',
-)
-
 MIDDLEWARE_CLASSES += (
     'saas.multidb.middleware.ModelRoutingMiddleware',
 )
 
-DATABASES.update({
-    'rhinocloud.com': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'rhinocloud.com.db',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    },
-    
-    'helveticode.com': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'helveticode.com.db',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    },
-})
+DATABASES['helveticode.com'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': 'helveticode.com.db',
+    'USER': '',
+    'PASSWORD': '',
+    'HOST': '',
+    'PORT': '',
+}
 
-DATABASE_ROUTERS = ['saas.multidb.routers.RequestDBRouter']
+DATABASES['rhinocloud.com'] = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': 'rhinocloud.com.db',
+    'USER': '',
+    'PASSWORD': '',
+    'HOST': '',
+    'PORT': '',
+}
+
+
+DATABASE_ROUTERS = ['saas.multidb.routers.RequestRouter']

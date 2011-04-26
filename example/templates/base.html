@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    
+    <body>
+        <a href="{% url index %}">Index</a>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>

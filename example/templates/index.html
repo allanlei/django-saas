@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+    <h3>Databases</h3>
+    {% for database in databases %}
+    <a href="{% url detail %}?domain={{ database }}"><div>{{ database }}</div></a>
+    {% endfor %}
+{% endblock %}

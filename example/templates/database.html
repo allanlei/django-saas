@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for model, queryset in querysets.items %}
+    <div>
+        <h3>{{ model }}</h3>
+        {% for obj in queryset %}
+        <p>
+            {{ obj }}
+        </p>
+        {% endfor %}
+    </div>
+    {% endfor %}
+{% endblock %}
