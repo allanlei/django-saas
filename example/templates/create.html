@@ -1,0 +1,64 @@
+{% spaceless %}
+<div style="display:table;">
+    <div style="display:table-cell;width:25%;">
+        <form method="POST" action="{% url user_create %}?domain={{ db }}">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            <input type="submit" value="Create User under {{ db }}" />
+        </form>
+        <ul>
+        {% for user in users %}
+            <li>{{ user }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    
+    <div style="display:table-cell;width:25%;">
+        <form method="POST" action="{% url testdata_create %}?domain={{ db }}">
+            {% csrf_token %}
+            {{ testdata_form.as_p }}
+            <input type="submit" value="Create TestData under {{ db }}" />
+        </form>
+        <ul>
+        {% for data in testdata %}
+            <li>{{ data }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    
+    
+    
+    
+    
+    {% with defaults.users as users %}
+    <div style="display:table-cell;width:25%;background-color:whitesmoke;">
+        <form method="POST" action="{% url user_create %}?domain=default">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            <input type="submit" value="Create TestData under default" />
+        </form>
+        <ul>
+        {% for user in users %}
+            <li>{{ user }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endwith %}
+    
+    {% with defaults.testdata as testdata %}
+    <div style="display:table-cell;width:25%;background-color:whitesmoke;">
+        <form method="POST" action="{% url testdata_create %}?domain=default">
+            {% csrf_token %}
+            {{ testdata_form.as_p }}
+            <input type="submit" value="Create TestData under default" />
+        </form>
+        <ul>
+        {% for data in testdata %}
+            <li>{{ data }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endwith %}
+
+</div>
+{% endspaceless %}
