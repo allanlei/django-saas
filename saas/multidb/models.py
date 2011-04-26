@@ -31,4 +31,5 @@ class Database(models.Model):
         }
         
     def load(self):
-        settings.DATABASES.update(self.to_dict())
+        raise NotImplementedError
+#        settings.DATABASES.update(self.to_dict())

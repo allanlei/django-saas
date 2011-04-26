@@ -1,5 +1,4 @@
 from django.db import models
-from saas.multidb.utils import ModelRoutingField
 
 class TestData(models.Model):
     name = models.CharField(max_length=256)

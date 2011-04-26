@@ -11,28 +11,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'saas',                      # Or path to database file if using sqlite3.
-        'USER': 'saas',                      # Not used with sqlite3.
-        'PASSWORD': 'saas',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    },
-    
-    'rhinocloud.com': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'rhinocloud.com',                      # Or path to database file if using sqlite3.
-        'USER': 'saas',                      # Not used with sqlite3.
-        'PASSWORD': 'saas',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    },
-    
-    'helveticode.com': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'helveticode.com',                      # Or path to database file if using sqlite3.
-        'USER': 'saas',                      # Not used with sqlite3.
-        'PASSWORD': 'saas',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'saas.db',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     },
@@ -116,10 +98,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'saas.multidb.middleware.ModelRoutingMiddleware',
 )
 
-ROOT_URLCONF = 'saas.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -134,10 +115,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    
-    'saas',
-    'saas.multidb',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -169,5 +146,35 @@ LOGGING = {
 }
 
 
+
+
+INSTALLED_APPS += (
+    'example',
+    'saas.multidb',
+)
+
+MIDDLEWARE_CLASSES += (
+    'saas.multidb.middleware.ModelRoutingMiddleware',
+)
+
+DATABASES.update({
+    'rhinocloud.com': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'rhinocloud.com.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+    
+    'helveticode.com': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'helveticode.com.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+})
 
 DATABASE_ROUTERS = ['saas.multidb.routers.RequestDBRouter']
