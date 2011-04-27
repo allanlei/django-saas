@@ -2,6 +2,10 @@ from django.db import models
 from django.conf import settings
 from django.utils import simplejson as json
 
+import managers
+from signals import db_pre_load, db_post_load, db_pre_unload, db_post_unload
+
+
 DEFAULT = settings.DATABASES['default']
 
 class Database(models.Model):
@@ -23,6 +27,8 @@ class Database(models.Model):
     port = models.CharField(max_length=24, blank=True, default=DEFAULT['PORT'], help_text='The port of the database server')
     extra = models.TextField(blank=True)
     
+    objects = managers.DatabaseManager()
+    
     def __unicode__(self):
         return u'%s(%s)' % (self.db, self.engine.split('.')[-1])
         
@@ -41,12 +47,18 @@ class Database(models.Model):
         return self.db in settings.DATABASES
         
     def load(self):
+        db_pre_load.send(sender=self.__class__, instance=self)
+        loaded = False
         if not self.is_loaded():
             settings.DATABASES[self.db] = self.settings
+            loaded = True
+        db_post_load.send(sender=self.__class__, instance=self, loaded=loaded)
     
     def unload(self):
+        db_pre_unload.send(sender=self.__class__, instance=self)
         if self.is_loaded():
             del settings.DATABASES[self.db]
+        db_post_unload.send(sender=self.__class__, instance=self)
 
 
 from signals import create_db, drop_db

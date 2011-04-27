@@ -7,6 +7,12 @@ db_route_read = django.dispatch.Signal(providing_args=[])
 db_route_write = django.dispatch.Signal(providing_args=[])
 
 
+db_pre_load = django.dispatch.Signal(providing_args=['instance'])
+db_post_load = django.dispatch.Signal(providing_args=['instance'])
+
+db_pre_unload = django.dispatch.Signal(providing_args=['instance'])
+db_post_unload = django.dispatch.Signal(providing_args=['instance'])
+
 def create_db(sender, instance, created=False, **kwargs):
     if created:
         db = instance
