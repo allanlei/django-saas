@@ -1,11 +1,27 @@
 <html>
     <head>
         <title>{% block title %}{% endblock %}</title>
+        <style type="text/css">
+            p{
+                text-indent: 1.5em;
+                font-size:smaller;
+            }
+        </style>
     </head>
     
     <body>
-        <a href="{% url index %}">Index</a>
-        {% block content %}
-        {% endblock %}
+        <div style="display:table;width:100%;">
+            <div style="display:table-cell; width:80%;">
+            {% block content %}
+            {% endblock %}
+            </div>
+            <div style="display:table-cell;background-color:whitesmoke;">
+                <form action="{% url create %}" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Save" />
+                </form>
+            </div>
+        </div>
     </body>
 </html>

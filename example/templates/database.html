@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <a href="{% url index %}">Index</a>
+    <h2><a href="{% url detail %}?domain={{ database.name }}">{{ database }}</a></h2>
+    
     {% for model, queryset in querysets.items %}
     <div>
-        <h3>{{ model }}</h3>
+        <h4>{{ model }}</h4>
         {% for obj in queryset %}
-        <p>
-            {{ obj }}
-        </p>
+        <p>{{ obj }}</p>
         {% endfor %}
     </div>
     {% endfor %}
