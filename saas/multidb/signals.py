@@ -23,10 +23,13 @@ def create_db(sender, instance, created=False, **kwargs):
         if getattr(settings, 'SAAS_MULTIDB_AUTOLOAD', True):
             db.load()
         if getattr(settings, 'SAAS_MULTIDB_AUTOSYNC', True):
-            call_command('syncdb', database=db.db, verbosity=0, noinput=True)
+            call_command('syncdb', database=db.db, verbosity=0, interactive=False)
 
 def drop_db(sender, instance, **kwargs):
     db = instance
-    if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True):
-        db.unload()
-#       call_command('dropdb', verbosity=0)
+    from django.db import connections
+    connections[db.db].close()
+    call_command('dropdb', db.name, engine=db.engine, username=db.user, host=db.host, port=db.port, verbosity=0)
+
+def unload_db(sender, instance, **kwargs):
+    instance.unload()
