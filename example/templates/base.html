@@ -17,10 +17,25 @@
             </div>
             <div style="display:table-cell;background-color:whitesmoke;">
                 <form action="{% url create %}" method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Save" />
+                    <fieldset>
+                        <legend>Object Creation</legend>
+                        <p>TestModel3 has value with property unique=True</p>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Save" />
+                    </fieldset>
                 </form>
+                
+                {% if db_form %}
+                <form action="{% url create_db %}" method="POST">
+                    <fieldset>
+                        <legend>Database Creation</legend>
+                        {% csrf_token %}
+                        {{ db_form.as_p }}
+                        <input type="submit" value="Create" />
+                    </fieldset>
+                </form>
+                {% endif %}
             </div>
         </div>
     </body>
