@@ -1,0 +1,3 @@
+Limitations:
+    Does not reload databases in different instances.
+        Running dev server with runserver and then opening shell to create Database will not make runserver to reload with Database changes, due to 2 instances of settings
