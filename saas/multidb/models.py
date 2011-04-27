@@ -59,8 +59,15 @@ class Database(models.Model):
         if self.is_loaded():
             del settings.DATABASES[self.db]
         db_post_unload.send(sender=self.__class__, instance=self)
+    
+    def __enter__(self):
+        self.load()
+    
+    def __exit__(self, **exceptions):
+        self.unload()
 
 
-from signals import create_db, drop_db
+from signals import create_db, drop_db, unload_db
 if getattr(settings, 'SAAS_MULTIDB_AUTOCREATE', True): models.signals.post_save.connect(create_db, sender=Database)
-if getattr(settings, 'SAAS_MULTIDB_AUTODROP', True):models.signals.post_delete.connect(drop_db, sender=Database)
+if getattr(settings, 'SAAS_MULTIDB_AUTODROP', True): models.signals.post_delete.connect(drop_db, sender=Database)
+if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True): models.signals.post_delete.connect(unload_db, sender=Database)
