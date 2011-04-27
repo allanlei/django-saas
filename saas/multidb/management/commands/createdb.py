@@ -47,7 +47,7 @@ class Command(BaseCommand):
         return self.run_command(cmd)
     
     def create_sqlite3(self, name):
-        pass
+        return self.run_command(['touch', name])
     
     def create_postgresql(self, name):
         raise NotImplementedError
