@@ -1,3 +1,5 @@
 include README LICENSE
 include MANIFEST.in
-recursive-include *.py *.html
+recursive-include example *.py *.html
+graft saas
+exclude example/saas
