@@ -31,7 +31,7 @@ packages, data_files = [], []
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
-django_dir = 'auth'
+django_dir = 'saas'
 
 for dirpath, dirnames, filenames in os.walk(django_dir):
     # Ignore dirnames that start with '.'
@@ -44,13 +44,13 @@ for dirpath, dirnames, filenames in os.walk(django_dir):
 
 setup(
     name = 'saas',
-    version = '0.0.1',
-    url = '',
+    version = '0.1',
+    url = 'https://github.com/allanlei/django-saas',
     author = 'Allan Lei',
     author_email = 'allanlei@helveticode.com',
     description = 'SaaS functionality for Django',
-    download_url = 'git://github.com/allanlei/saas.git',
-#    license = 'Apache 2.0',
+    download_url = 'git://github.com/allanlei/django-saas.git',
+    license = 'New BSD',
     packages = packages,
     cmdclass = {
         'install_data': install_data
