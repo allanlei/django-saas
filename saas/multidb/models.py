@@ -18,7 +18,7 @@ class Database(models.Model):
         ('django.db.backends.oracle', 'django.db.backends.oracle'),
     )
 
-    db = models.CharField(max_length=256, primary_key=True, help_text='The database name that goes into Django settings')
+    db = models.CharField(max_length=256, unique=True, help_text='The database name that goes into Django settings')
     
     engine = models.CharField(max_length=48, default=DEFAULT['ENGINE'], choices=ENGINES, help_text='Django database engine type')
     name = models.CharField(max_length=256, null=False, blank=False, help_text='The name of the database')
@@ -74,16 +74,30 @@ class Database(models.Model):
         self.unload()
 
 
-from signals import create_db, drop_db, unload_db, autoload_db
+from signals import create_db, drop_db, unload_db, startup_db
 from django.db.backends.signals import connection_created
+#if getattr(settings, 'SAAS_MULTIDB_STARTUP', True): connection_created.connect(startup_db, dispatch_uid='db_autoload')
+
 if getattr(settings, 'SAAS_MULTIDB_AUTOCREATE', True): models.signals.post_save.connect(create_db, sender=Database)
+
 if getattr(settings, 'SAAS_MULTIDB_AUTODROP', True): models.signals.post_delete.connect(drop_db, sender=Database)
 if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True): models.signals.post_delete.connect(unload_db, sender=Database)
-if getattr(settings, 'SAAS_MULTIDB_STARTUP', True): connection_created.connect(autoload_db, dispatch_uid='db_autoload')
+
+
+
+
+
+
+
+
+
+
+
 
 
 def conn_created(sender, connection, **kwargs):
-    print 'CONNECTED'
+    for key, conn in connections._connections.items():
+        if conn == connection: print 'Connected to %s' % key
 connection_created.connect(conn_created)
 
 

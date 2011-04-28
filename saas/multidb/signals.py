@@ -6,12 +6,14 @@ import django.dispatch
 db_route_read = django.dispatch.Signal(providing_args=[])
 db_route_write = django.dispatch.Signal(providing_args=[])
 
-
 db_pre_load = django.dispatch.Signal(providing_args=['instance'])
 db_post_load = django.dispatch.Signal(providing_args=['instance'])
 
 db_pre_unload = django.dispatch.Signal(providing_args=['instance'])
 db_post_unload = django.dispatch.Signal(providing_args=['instance'])
+
+
+
 
 def create_db(sender, instance, created=False, **kwargs):
     if created:
@@ -22,9 +24,9 @@ def create_db(sender, instance, created=False, **kwargs):
             call_command('createdb', db.db, engine=db.engine, username=db.user, host=db.host, port=db.port, verbosity=0)
         if getattr(settings, 'SAAS_MULTIDB_AUTOLOAD', True):
             db.load()
-        if getattr(settings, 'SAAS_MULTIDB_AUTOSYNC', True):
+        if getattr(settings, 'SAAS_MULTIDB_AUTOSYNC', True) and db.is_loaded():
             call_command('syncdb', database=db.db, verbosity=0, interactive=False)
-
+    
 def drop_db(sender, instance, **kwargs):
     db = instance
     db.unload()
@@ -34,8 +36,8 @@ def unload_db(sender, instance, **kwargs):
     instance.unload()
 
 from django.db.backends.signals import connection_created
-def autoload_db(sender, connection, signal=None, **kwargs):
+def startup_db(sender, connection, signal=None, **kwargs):
     from models import Database
-    Database.objects.using('default').all().load()
+    Database.objects.using('default').all().load()          #Problem with initial syncdb
     connection_created.disconnect(dispatch_uid='db_autoload')
     print 'LOADED'
