@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 
-from saas.multidb.middleware import request_router_info
+from saas.multidb.middleware import ModelRoutingMiddleware
 from saas.multidb.models import Database
 
 from tests.models import *
@@ -40,7 +40,7 @@ class DetailView(generic.base.TemplateView):
         
         context.update({
             'form': TestDataForm(models=MODELS, initial={'database': self.request.GET.get('domain', 'default')}),
-            'database': request_router_info(None, self.request),
+            'database': ModelRoutingMiddleware.request_router_info(None, self.request),
             'querysets': dict([(model_class.__name__, model_class.objects.all()) for model_class in MODELS]),
         })
         return context
