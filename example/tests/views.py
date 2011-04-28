@@ -23,7 +23,7 @@ class IndexView(generic.base.TemplateView):
         context.update({
             'settings': settings.DATABASES.keys(),
             'databases': [{
-                'name': db,
+                'name': db if db == 'default' else db.db,
                 'querysets': dict([(model.__name__, model.objects.using(db if db == 'default' else db.db).all()) for model in MODELS]),
             }for db in ['default'] + list(Database.objects.all())],
             'form': TestDataForm(models=MODELS, initial={'database': self.request.GET.get('domain', 'default')}),

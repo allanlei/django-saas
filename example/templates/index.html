@@ -10,6 +10,7 @@
             <div style="display:table-cell;">
             <h2>
                 <a href="{% url detail %}?domain={{ database.name }}">{{ database.name }}</a>
+                
                 <form method="POST" action="{% url delete_db database.name %}">
                     {% csrf_token %}
                     <input type="hidden" name="database" value="{{ database.name }}" />
