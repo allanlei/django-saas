@@ -23,3 +23,8 @@ class ModelRoutingMiddleware(object):
         db_route_read.disconnect(weak=False, dispatch_uid=request)
         db_route_write.disconnect(weak=False, dispatch_uid=request)
         return response
+
+class AutoLoadMiddleware(object):
+    def __init__(self):
+        Database.objects.all().load()
+        raise MiddlewareNotUsed

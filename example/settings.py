@@ -147,19 +147,18 @@ LOGGING = {
 
 
 MIDDLEWARE_CLASSES += (
+    'saas.multidb.middleware.AutoLoadMiddleware',
     'saas.multidb.middleware.ModelRoutingMiddleware',
 )
 
 DATABASE_ROUTERS = ['saas.multidb.routers.RequestRouter']
 
 
-
-SAAS_MULTIDB_AUTOCREATE = True
-SAAS_MULTIDB_AUTODROP = True
-SAAS_MULTIDB_AUTOUNLOAD = True
-SAAS_MULTIDB_STARTUP = True
+SAAS_MULTIDB_AUTOCREATE = True              #Create the actual database when Database object is created
+SAAS_MULTIDB_AUTODROP = True                #Delete the actual datbase when Database object is deleted
+SAAS_MULTIDB_AUTOUNLOAD = True              #Remove the database in settings when Database object is deleted
+SAAS_MULTIDB_STARTUP = True                 #Load databases on startup
 SAAS_MULTIDB_GET_OR_CREATE = False
-SAAS_MULTIDB_AUTOLOAD = True
-SAAS_MULTIDB_AUTOSYNC = True
-
+SAAS_MULTIDB_AUTOLOAD = True                #Load the database into settings when Database object is created
+SAAS_MULTIDB_AUTOSYNC = True                #Syncdb when database is loaded
 SAAS_MULTIDB_INACTIVE_TIMEOUT = 60 * 60
