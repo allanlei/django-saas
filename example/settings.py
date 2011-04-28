@@ -147,8 +147,19 @@ LOGGING = {
 
 
 MIDDLEWARE_CLASSES += (
-    'saas.multidb.middleware.DatabaseLoadMiddleware',
     'saas.multidb.middleware.ModelRoutingMiddleware',
 )
 
 DATABASE_ROUTERS = ['saas.multidb.routers.RequestRouter']
+
+
+
+SAAS_MULTIDB_AUTOCREATE = True
+SAAS_MULTIDB_AUTODROP = True
+SAAS_MULTIDB_AUTOUNLOAD = True
+SAAS_MULTIDB_STARTUP = True
+SAAS_MULTIDB_GET_OR_CREATE = False
+SAAS_MULTIDB_AUTOLOAD = True
+SAAS_MULTIDB_AUTOSYNC = True
+
+SAAS_MULTIDB_INACTIVE_TIMEOUT = 60 * 60

@@ -27,9 +27,15 @@ def create_db(sender, instance, created=False, **kwargs):
 
 def drop_db(sender, instance, **kwargs):
     db = instance
-    from django.db import connections
-    connections[db.db].close()
+    db.unload()
     call_command('dropdb', db.name, engine=db.engine, username=db.user, host=db.host, port=db.port, verbosity=0)
 
 def unload_db(sender, instance, **kwargs):
     instance.unload()
+
+from django.db.backends.signals import connection_created
+def autoload_db(sender, connection, signal=None, **kwargs):
+    from models import Database
+    Database.objects.using('default').all().load()
+    connection_created.disconnect(dispatch_uid='db_autoload')
+    print 'LOADED'

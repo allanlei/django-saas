@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import simplejson as json
+from django.db import connections
 
 import managers
 from signals import db_pre_load, db_post_load, db_pre_unload, db_post_unload
@@ -58,8 +59,14 @@ class Database(models.Model):
         db_pre_unload.send(sender=self.__class__, instance=self)
         if self.is_loaded():
             del settings.DATABASES[self.db]
+            self.disconnect()
         db_post_unload.send(sender=self.__class__, instance=self)
     
+    def disconnect(self):
+        connections[self.db].close()
+        if not self.is_loaded():
+            del connections._connections[self.db]
+        
     def __enter__(self):
         self.load()
     
@@ -67,7 +74,16 @@ class Database(models.Model):
         self.unload()
 
 
-from signals import create_db, drop_db, unload_db
+from signals import create_db, drop_db, unload_db, autoload_db
+from django.db.backends.signals import connection_created
 if getattr(settings, 'SAAS_MULTIDB_AUTOCREATE', True): models.signals.post_save.connect(create_db, sender=Database)
 if getattr(settings, 'SAAS_MULTIDB_AUTODROP', True): models.signals.post_delete.connect(drop_db, sender=Database)
 if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True): models.signals.post_delete.connect(unload_db, sender=Database)
+if getattr(settings, 'SAAS_MULTIDB_STARTUP', True): connection_created.connect(autoload_db, dispatch_uid='db_autoload')
+
+
+def conn_created(sender, connection, **kwargs):
+    print 'CONNECTED'
+connection_created.connect(conn_created)
+
+
