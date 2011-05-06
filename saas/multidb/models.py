@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import simplejson as json
 from django.db import connections
+from django.core.exceptions import ValidationError
 
 import managers
 from signals import db_pre_load, db_post_load, db_pre_unload, db_post_unload
@@ -9,6 +10,13 @@ from signals import db_pre_load, db_post_load, db_pre_unload, db_post_unload
 
 DEFAULT = settings.DATABASES['default']
 
+
+def validate_json(value):
+    try:
+        json.loads(value)
+    except ValueError:
+        raise ValidationError('Database extra is not JSON serializable')
+    
 class Database(models.Model):
     ENGINES = (
         ('django.db.backends.postgresql_psycopg2', 'django.db.backends.postgresql_psycopg2'),
@@ -22,11 +30,11 @@ class Database(models.Model):
     
     engine = models.CharField(max_length=48, default=DEFAULT['ENGINE'], choices=ENGINES, help_text='Django database engine type')
     name = models.CharField(max_length=256, null=False, blank=False, help_text='The name of the database')
-    user = models.CharField(max_length=24, blank=True, default=DEFAULT['USER'], help_text='The database user')
-    password = models.CharField(max_length=512, blank=True, default=DEFAULT['PASSWORD'], help_text='The password for the database user. Encrypted')
+    user = models.CharField(max_length=24, blank=True, help_text='The database user')
+    password = models.CharField(max_length=512, blank=True, help_text='The password for the database user. Encrypted')
     host = models.CharField(max_length=96, blank=True, default=DEFAULT['HOST'], help_text='The hostname of the database server')
     port = models.CharField(max_length=24, blank=True, default=DEFAULT['PORT'], help_text='The port of the database server')
-    extra = models.TextField(blank=True)
+    extra = models.TextField(blank=True, validators=[validate_json])
     
     objects = managers.DatabaseManager()
     
@@ -42,8 +50,17 @@ class Database(models.Model):
             'PASSWORD': self.password,
             'HOST': self.host,
             'PORT': self.port,
+            'OPTIONS': self.options,
         }
     
+    @property
+    def options(self):
+        return json.loads(extra)
+    
+    @options.setter
+    def options(self, value):
+        self.extra = json.dumps(value)
+        
     def is_loaded(self):
         return self.db in settings.DATABASES
         
