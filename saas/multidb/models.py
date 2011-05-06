@@ -100,7 +100,6 @@ from django.db.backends.signals import connection_created
 #if getattr(settings, 'SAAS_MULTIDB_STARTUP', True): connection_created.connect(startup_db, dispatch_uid='db_autoload')
 
 if getattr(settings, 'SAAS_MULTIDB_AUTOCREATE', True): models.signals.post_save.connect(create_db, sender=Database)
-
 if getattr(settings, 'SAAS_MULTIDB_AUTODROP', True): models.signals.post_delete.connect(drop_db, sender=Database)
 if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True): models.signals.post_delete.connect(unload_db, sender=Database)
 
@@ -119,6 +118,6 @@ if getattr(settings, 'SAAS_MULTIDB_AUTOUNLOAD', True): models.signals.post_delet
 def conn_created(sender, connection, **kwargs):
     for key, conn in connections._connections.items():
         if conn == connection: print 'Connected to %s' % key
-connection_created.connect(conn_created)
+#connection_created.connect(conn_created)
 
 
