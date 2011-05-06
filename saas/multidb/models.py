@@ -55,7 +55,7 @@ class Database(models.Model):
     
     @property
     def options(self):
-        return json.loads(extra)
+        return json.loads(self.extra)
     
     @options.setter
     def options(self, value):
