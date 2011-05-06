@@ -34,7 +34,7 @@ class Database(models.Model):
     password = models.CharField(max_length=512, blank=True, help_text='The password for the database user. Encrypted')
     host = models.CharField(max_length=96, blank=True, default=DEFAULT['HOST'], help_text='The hostname of the database server')
     port = models.CharField(max_length=24, blank=True, default=DEFAULT['PORT'], help_text='The port of the database server')
-    extra = models.TextField(blank=True, validators=[validate_json])
+    extra = models.TextField(default='{}', validators=[validate_json])
     
     objects = managers.DatabaseManager()
     
@@ -55,8 +55,12 @@ class Database(models.Model):
     
     @property
     def options(self):
-        return json.loads(self.extra)
-    
+        try:
+            return json.loads(self.extra)
+        except json.JSONDecodeError:
+            self.extra = '{}'
+            return json.loads(self.extra)
+            
     @options.setter
     def options(self, value):
         self.extra = json.dumps(value)
