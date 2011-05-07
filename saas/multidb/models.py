@@ -91,7 +91,7 @@ class Database(models.Model):
     def __enter__(self):
         self.load()
     
-    def __exit__(self, **exceptions):
+    def __exit__(self, *args, **exceptions):
         self.unload()
 
 
