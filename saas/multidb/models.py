@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import simplejson as json
 from django.db import connections
 from django.core.exceptions import ValidationError
+from django.db.utils import ConnectionDoesNotExist
 
 import managers
 from signals import db_pre_load, db_post_load, db_pre_unload, db_post_unload
@@ -84,7 +85,10 @@ class Database(models.Model):
         db_post_unload.send(sender=self.__class__, instance=self)
     
     def disconnect(self):
-        connections[self.db].close()
+        try:
+            connections[self.db].close()
+        except ConnectionDoesNotExist:
+            pass
         if not self.is_loaded():
             del connections._connections[self.db]
         
