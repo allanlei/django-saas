@@ -89,7 +89,7 @@ class Database(models.Model):
             connections[self.db].close()
         except ConnectionDoesNotExist:
             pass
-        if not self.is_loaded():
+        if not self.is_loaded() and self.db in connections._connections:
             del connections._connections[self.db]
         
     def __enter__(self):
