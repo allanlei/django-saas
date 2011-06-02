@@ -1,5 +1,5 @@
-include README LICENSE
-include MANIFEST.in
+include README
+include LICENSE
+include MANIFEST
 recursive-include example *.py *.html
 graft saas
-exclude example/saas
