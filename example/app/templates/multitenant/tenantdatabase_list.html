@@ -1,0 +1,16 @@
+{% extends 'multitenant/tenantdatabase_generic.html' %}
+
+{% block content %}
+    <a href="{% url tenant:create %}">Create Tenant</a>
+    
+    <h5>Databases</h5>
+    <ul>
+        {% with default as tenant %}
+        <li><a href="{% url item:list %}?tenant={{ tenant.db }}">Default ({{ tenant.item_count }})</a></li>
+        {% endwith %}
+        
+        {% for tenant in object_list %}
+        <li><a href="{% url item:list %}?tenant={{ tenant.db }}">{{ tenant }} ({{ tenant.item_count }})</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

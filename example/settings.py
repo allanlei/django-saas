@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DATABASE_DIR + 'default.db',                      # Or path to database file if using sqlite3.
+        'NAME': 'default.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -100,12 +100,22 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    'example.app.context_processors.settings_context',
 )
 
 INSTALLED_APPS = (
@@ -114,9 +124,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'example.tests',
-    'saas.multidb',
+    
+    'example.app',
+    
+    'saas.multitenant',
+    'saas.multitenant.multidb',
+#    'saas.multitenant.multischema',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -134,7 +147,6 @@ LOGGING = {
         }
     },
     'loggers': {
-        
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
@@ -147,11 +159,12 @@ LOGGING = {
 
 
 MIDDLEWARE_CLASSES += (
-    'saas.multidb.middleware.AutoLoadMiddleware',
-    'saas.multidb.middleware.ModelRoutingMiddleware',
+    'saas.multitenant.base.middleware.AutoLoadMiddleware',
+#    'saas.multitenant.base.middleware.MultiTenantMiddleware',
+    'example.app.middleware.MultiTenantMiddleware',
 )
 
-DATABASE_ROUTERS = ['saas.multidb.routers.RequestRouter']
+DATABASE_ROUTERS = ['saas.multitenant.routers.MultiTenantRouter']
 
 
 SAAS_MULTIDB_AUTOCREATE = True              #Create the actual database when Database object is created

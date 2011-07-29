@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for model,query in models.items %}
+        <h5>{{ model }}</h5>
+        <form method="POST" action="{% url item:create %}?model={{ model }}&tenant={{ tenant }}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create" />
+        </form>
+        
+        <ul>
+        {% for obj in query %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'multitenant/tenantdatabase_generic.html' %}
+
+{% block content %}
+    {% for query in queries %}
+        <h5>{{ query.model }}</h5>
+        <ul>
+        {% for obj in query %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from django.conf import settings
-
+from django.db.backends.signals import connection_created
 
 def create_db(sender, instance, created=False, **kwargs):
     if created:
@@ -22,9 +22,10 @@ def drop_db(sender, instance, **kwargs):
 def unload_db(sender, instance, **kwargs):
     instance.unload()
 
-from django.db.backends.signals import connection_created
+
+
+
 def startup_db(sender, connection, signal=None, **kwargs):
-    from models import Database
-    Database.objects.using('default').all().load()          #Problem with initial syncdb
+    from saas.multitenant.models import TenantDatabase
+    TenantDatabase.objects.using('default').load()          #Problem with initial syncdb
     connection_created.disconnect(dispatch_uid='db_autoload')
-    print 'LOADED'

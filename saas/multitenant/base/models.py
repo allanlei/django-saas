@@ -7,7 +7,6 @@ from django.db.utils import ConnectionDoesNotExist
 from validators import validate_json
 from signals import db_route_read, db_route_write, db_pre_load, db_post_load, db_pre_unload, db_post_unload, db_pre_disconnect, db_post_disconnect
 
-import managers
 
 DEFAULT_DB = settings.DATABASES['default']
 
@@ -30,8 +29,6 @@ class BaseTenantDatabase(models.Model):
     host = models.CharField(max_length=96, blank=True, default=DEFAULT_DB['HOST'], help_text='The hostname of the database server')
     port = models.CharField(max_length=24, blank=True, default=DEFAULT_DB['PORT'], help_text='The port of the database server')
     extra = models.TextField(default='{}', validators=[validate_json])
-    
-    objects = managers.DatabaseManager()
     
     class Meta:
         abstract = True

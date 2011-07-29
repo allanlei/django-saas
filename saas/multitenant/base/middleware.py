@@ -6,6 +6,7 @@ from signals import db_route_read, db_route_write
 class BaseMultiTenantMiddleware(object):
     signal_function = None
     signals = [db_route_read, db_route_write]
+    models = None
     
     def get_signal_function(self, **kwargs):
         if self.signal_function:
@@ -23,15 +24,38 @@ class BaseMultiTenantMiddleware(object):
         else:
             raise ImproperlyConfigured('Provide signals')
         return signals
+    
+    def get_models(self):
+        return self.models
         
     def connect_signals(self, request, weak=False, **kwargs):
-        signal_function = self.get_signal_function(request=request)
         for signal in self.get_signals():
-            signal.connect(signal_function, weak=weak, dispatch_uid=self.get_dispatch_uid, **kwargs)
+            models = self.get_models()
+            if models is None:
+                signal.connect(
+                    self.get_signal_function(request=request), 
+                    weak=weak, 
+                    dispatch_uid=self.get_dispatch_uid(request), 
+                    **kwargs
+                )
+            else:
+                for model in models:
+                    signal.connect(
+                        self.get_signal_function(request=request), 
+                        sender=model, 
+                        weak=weak, 
+                        dispatch_uid=self.get_dispatch_uid(request), 
+                        **kwargs
+                    )
     
     def disconnect_signals(self, request, weak=False, **kwargs):
         for signal in self.get_signals():
-            signal.disconnect(weak=weak, dispatch_uid=self.get_dispatch_uid(request), **kwargs)
+            models = self.get_models()
+            if models is None:
+                signal.disconnect(weak=weak, dispatch_uid=self.get_dispatch_uid(request), **kwargs)
+            else:
+                for model in models:
+                    signal.disconnect(weak=weak, sender=model, dispatch_uid=self.get_dispatch_uid(request), **kwargs)
         
     def process_request(self, request):
         self.connect_signals(request)
@@ -42,25 +66,27 @@ class BaseMultiTenantMiddleware(object):
         return response
     
     
-class RequestMultiTenantMixin(self):
+class RequestMultiTenantMixin(object):
     @classmethod
     def get_request(cls, sender, request=None, **kwargs):
         return request
     
-    def get_signal_function(self, request=request):
+    def get_signal_function(self, request=None, **kwargs):
         return curry(self.get_request, request=request)
 
 
-class RequestAttributeMultTenantMixin(RequestMultiTenantMixin):
+class RequestAttributeMultiTenantMixin(RequestMultiTenantMixin):        
     @classmethod
     def get_request(cls, sender, request=None, **kwargs):
-        return request and request.GET.get('domain', 'default') or None
-    
+        return request and request.GET.get('tenant', 'default') or None
 
-    
-#from saas.multidb.models import Database
-#from django.core.exceptions import MiddlewareNotUsed
-#class AutoLoadMiddleware(object):
-#    def __init__(self):
-#        Database.objects.load()
-#        raise MiddlewareNotUsed()
+class MultiTenantMiddleware(RequestAttributeMultiTenantMixin, BaseMultiTenantMiddleware):
+    pass
+
+from saas.multitenant.models import TenantDatabase
+from django.core.exceptions import MiddlewareNotUsed
+
+class AutoLoadMiddleware(object):
+    def __init__(self):
+        TenantDatabase.objects.load()
+        raise MiddlewareNotUsed()
