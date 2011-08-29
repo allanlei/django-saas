@@ -1,5 +1,5 @@
 # Django settings for saas project.
-DATABASE_DIR = 'databases/'
+#DATABASE_DIR = 'databases/'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -115,7 +115,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
-    'example.app.context_processors.settings_context',
+#    'example.app.context_processors.settings_context',
 )
 
 INSTALLED_APPS = (
@@ -127,8 +127,8 @@ INSTALLED_APPS = (
     
     'example.app',
     
-    'saas.multitenant',
-    'saas.multitenant.multidb',
+#    'saas.multitenant',
+#    'saas.multitenant.multidb',
 #    'saas.multitenant.multischema',
 )
 
@@ -155,23 +155,24 @@ LOGGING = {
     }
 }
 
+LOGIN_REDIRECT_URL = '/'
 
 
 
-MIDDLEWARE_CLASSES += (
-    'saas.multitenant.base.middleware.AutoLoadMiddleware',
-#    'saas.multitenant.base.middleware.MultiTenantMiddleware',
-    'example.app.middleware.MultiTenantMiddleware',
-)
+#MIDDLEWARE_CLASSES += (
+#    'saas.multitenant.base.middleware.AutoLoadMiddleware',
+##    'saas.multitenant.base.middleware.MultiTenantMiddleware',
+#    'example.app.middleware.MultiTenantMiddleware',
+#)
 
-DATABASE_ROUTERS = ['saas.multitenant.routers.MultiTenantRouter']
+#DATABASE_ROUTERS = ['saas.multitenant.routers.MultiTenantRouter']
 
 
-SAAS_MULTIDB_AUTOCREATE = True              #Create the actual database when Database object is created
-SAAS_MULTIDB_AUTODROP = True                #Delete the actual datbase when Database object is deleted
-SAAS_MULTIDB_AUTOUNLOAD = True              #Remove the database in settings when Database object is deleted
-SAAS_MULTIDB_STARTUP = True                 #Load databases on startup
-SAAS_MULTIDB_GET_OR_CREATE = False          #Not Implemented
-SAAS_MULTIDB_AUTOLOAD = True                #Load the database into settings when Database object is created
-SAAS_MULTIDB_AUTOSYNC = True                #Syncdb when database is loaded
-SAAS_MULTIDB_INACTIVE_TIMEOUT = 60 * 60     #Not Implemented
+#SAAS_MULTIDB_AUTOCREATE = True              #Create the actual database when Database object is created
+#SAAS_MULTIDB_AUTODROP = True                #Delete the actual datbase when Database object is deleted
+#SAAS_MULTIDB_AUTOUNLOAD = True              #Remove the database in settings when Database object is deleted
+#SAAS_MULTIDB_STARTUP = True                 #Load databases on startup
+#SAAS_MULTIDB_GET_OR_CREATE = False          #Not Implemented
+#SAAS_MULTIDB_AUTOLOAD = True                #Load the database into settings when Database object is created
+#SAAS_MULTIDB_AUTOSYNC = True                #Syncdb when database is loaded
+#SAAS_MULTIDB_INACTIVE_TIMEOUT = 60 * 60     #Not Implemented

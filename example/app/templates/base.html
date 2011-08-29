@@ -1,23 +1,20 @@
-<html>
+<!DOCTYPE HTML>
+<html lang="en">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        <![endif]-->
+        <title>{% block title %}{% endblock %}</title>
     </head>
-    
+	
     <body>
-        <div>
-            <h5>Settings.DATABASES</h5>
-            <ul>
-            {% for db, database in settings.DATABASES.items %}
-                <li>
-                    <h5>{{ db }}</h5>
-                    <ul>
-                    {% for key, val in database.items %}
-                        <li>{{ key }}  :  {{ val }}</li>
-                    {% endfor %}
-                    </ul>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% block content %}{% endblock %}
+        <header></header>
+	
+	    <div id="page">
+	        <p>You are logged in as {{ user.username }}</p>
+		    {% block content %}{% endblock %}
+	    </div>
+	    <footer> </footer>
     </body>
 </html>

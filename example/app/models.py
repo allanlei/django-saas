@@ -1,20 +1,15 @@
 from django.db import models
 
-class TestModel1(models.Model):
-    value = models.CharField(max_length=256)
-    
-    def __unicode__(self):
-        return '%s pk=%s' % (self.value, self.pk)
 
+class Topping(models.Model):
+    name = models.CharField(max_length=128, unique=True)
 
-class TestModel2(models.Model):
-    value = models.CharField(max_length=256)
-    
     def __unicode__(self):
-        return '%s pk=%s' % (self.value, self.pk)
+        return self.name
 
-class TestModel3(models.Model):
-    value = models.CharField(max_length=256, unique=True)
-    
+class Pizza(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+    toppings = models.ManyToManyField(Topping)
+
     def __unicode__(self):
-        return '%s pk=%s' % (self.value, self.pk)
+        return self.name
