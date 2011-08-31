@@ -18,10 +18,9 @@ class Command(syncdb.Command):
     def handle_noargs(self, tenant=None, **kwargs):
         ts = curry(lambda sender, **kwargs: kwargs.get('tenant', None), tenant=tenant)
         tenant_selection.connect(ts)
-        
         from django.db import connection, transaction
         cursor = connection.cursor()
-        cursor.execute('SET search_path = %s;', [tenant])
+        cursor.execute('SET search_path = %s;', [tenant or 'public'])
         transaction.commit_unless_managed()
         
         super(Command, self).handle_noargs(**kwargs)

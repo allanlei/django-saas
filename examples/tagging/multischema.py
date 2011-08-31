@@ -20,7 +20,7 @@ MIDDLEWARE_CLASSES = tuple((
     'tenancy.middleware.SignalTenantMiddleware',
 ) + MIDDLEWARE_CLASSES)
 
-DATABASE_ROUTERS += ['app.routers.SignalMultiSchemaTenantRouter']
+DATABASE_ROUTERS = ['app.routers.SignalMultiSchemaTenantRouter']
 
 
 SAAS_TENANCY_MODEL = None
