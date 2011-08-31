@@ -1,5 +1,8 @@
 from tenancy.base.routers import BaseTenantRouter
 
+import logging
+
+logger = logging.getLogger('tenancy')
 
 class MultiSchemaTenantRouter(BaseTenantRouter):
     def switch_schema(self, schema):
@@ -12,19 +15,19 @@ class MultiSchemaTenantRouter(BaseTenantRouter):
         tenant = self.get_tenant()
         if self.should_route(model, tenant=tenant, **hints):
             self.switch_schema(tenant)
-            print 'MS READ', model.__name__, hints, tenant
+            logger.info('READ\t%s\t%s %s ' % (model.__name__, hints, tenant))
         return None
         
     def db_for_write(self, model, **hints):
         tenant = self.get_tenant()
         if self.should_route(model, tenant=tenant, **hints):
             self.switch_schema(tenant)
-            print 'MS WRITE', model.__name__, hints, tenant
+            logger.info('WRITE\t%s\t%s %s ' % (model.__name__, hints, tenant))
         return None
 
     def allow_syncdb(self, db, model, **hints):
         tenant = self.get_tenant()
         if self.should_route(model, tenant=tenant, db=db, **hints):
             self.switch_schema(tenant)
-            print 'MS SYNCDB', model.__name__, hints, tenant
+            logger.info('SYNCDB\t%s\t%s %s ' % (model.__name__, hints, tenant))
         return None
