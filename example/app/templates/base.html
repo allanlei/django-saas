@@ -5,14 +5,15 @@
         <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
         <![endif]-->
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}MultiTenancy @ {{ request.get_host }}{% endblock %}</title>
     </head>
 	
     <body>
         <header></header>
 	
 	    <div id="page">
-	        <p>You are logged in as {{ user.username }}</p>
+	        {% if user.is_authenticated %}<p>You are logged in as {{ user.username }}</p>{% endif %}
+	        <p>There are {{ user_count }} registered users</p>
 		    {% block content %}{% endblock %}
 	    </div>
 	    <footer> </footer>

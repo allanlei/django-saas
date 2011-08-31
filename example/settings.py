@@ -115,8 +115,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
-#    'example.app.context_processors.settings_context',
+    'django.core.context_processors.request',
+    'app.context_processors.user_count',
 )
+
+#AUTHENTICATION_BACKENDS = (
+#    'app.backends.MyBackend',
+#    'django.contrib.auth.backends.ModelBackend',
+#)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -124,12 +130,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    
+    'django_extensions',
     'example.app',
-    
-#    'saas.multitenant',
-#    'saas.multitenant.multidb',
-#    'saas.multitenant.multischema',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,23 +158,3 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = '/'
-
-
-
-#MIDDLEWARE_CLASSES += (
-#    'saas.multitenant.base.middleware.AutoLoadMiddleware',
-##    'saas.multitenant.base.middleware.MultiTenantMiddleware',
-#    'example.app.middleware.MultiTenantMiddleware',
-#)
-
-#DATABASE_ROUTERS = ['saas.multitenant.routers.MultiTenantRouter']
-
-
-#SAAS_MULTIDB_AUTOCREATE = True              #Create the actual database when Database object is created
-#SAAS_MULTIDB_AUTODROP = True                #Delete the actual datbase when Database object is deleted
-#SAAS_MULTIDB_AUTOUNLOAD = True              #Remove the database in settings when Database object is deleted
-#SAAS_MULTIDB_STARTUP = True                 #Load databases on startup
-#SAAS_MULTIDB_GET_OR_CREATE = False          #Not Implemented
-#SAAS_MULTIDB_AUTOLOAD = True                #Load the database into settings when Database object is created
-#SAAS_MULTIDB_AUTOSYNC = True                #Syncdb when database is loaded
-#SAAS_MULTIDB_INACTIVE_TIMEOUT = 60 * 60     #Not Implemented

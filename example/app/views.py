@@ -10,7 +10,7 @@ class HomeView(generic.base.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context.update({
-            'pizzas': Pizza.objects.all(),
+            'pizzas': Pizza.objects.filter(),
         })
         return context
 
