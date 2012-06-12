@@ -1,33 +1,20 @@
-from django.utils.functional import curry
 from django.conf import settings
-from django.core.exceptions import MiddlewareNotUsed
+from django.core.urlresolvers import get_callable
+from django.utils.functional import curry
 
-from saas.multidb.signals import db_route_read, db_route_write
-from saas.multidb.models import Database
+from signals import request_for_read, request_for_write, request_for_syncdb
 
 
-class ModelRoutingMiddleware(object):
-    @classmethod
-    def request_router_info(cls, sender, request=None, **kwargs):
-        if request:
-            return request.REQUEST.get('domain', 'default')
-        
-    def get_signal_function(self, **kwargs):
-        return curry(self.request_router_info, **kwargs)
-    
+
+tenant_function = get_callable(settings.TENANT_ROUTING_FN)
+
+class TenantMiddleware(object):
     def process_request(self, request):
-        db_route_read.connect(self.get_signal_function(request=request), weak=False, dispatch_uid=request)
-        db_route_write.connect(self.get_signal_function(request=request), weak=False, dispatch_uid=request)
-        return None
-    
+        print 'Connect'
+        request_for_read.connect(curry(tenant_function, request=request), weak=False, dispatch_uid=request)
+        request_for_write.connect(curry(tenant_function, request=request), weak=False, dispatch_uid=request)
+
     def process_response(self, request, response):
-        db_route_read.disconnect(weak=False, dispatch_uid=request)
-        db_route_write.disconnect(weak=False, dispatch_uid=request)
-        return response
-
-
-
-class AutoLoadMiddleware(object):
-    def __init__(self):
-        Database.objects.all().load()
-        raise MiddlewareNotUsed
+        print 'Disconnect'
+        request_for_read.disconnect(weak=False, dispatch_uid=request)
+        request_for_write.disconnect(weak=False, dispatch_uid=request)
