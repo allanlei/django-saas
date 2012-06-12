@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav>
+        <ul>
+            <li><a href="{% url create %}">New User</a></li>
+        </ul>
+    </nav>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Login"/>
+</form>
+{% endblock %}

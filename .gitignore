@@ -4,3 +4,4 @@ example/databases/
 example/saas
 django_saas.egg-info/
 dist/
+*.db

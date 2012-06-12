@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav>
+        <ul>
+            <li><a href="{% url logout %}">Logout</a></li>
+            
+            <li><a href="{% url create_pizza %}">Create Pizza</a></li>
+            <li><a href="{% url create_topping %}">Create Topping</a></li>
+        </ul>
+    </nav>
+    
+    <p>You have {{ pizzas.count }} pizzas</p>
+    <ul>
+        {% for pizza in pizzas %}
+        <li>
+            {{ pizza }}
+            <ul>
+                {% for topping in pizza.toppings.all %}
+                <li>{{ topping }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
